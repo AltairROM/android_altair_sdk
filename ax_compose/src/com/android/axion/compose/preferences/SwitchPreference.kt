@@ -18,54 +18,18 @@
 
 package com.android.axion.compose.preferences
 
-import androidx.compose.foundation.clickable
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
-
-enum class PreferencePosition {
-    Single,
-    Top,
-    Middle,
-    Bottom
-}
-
-private val preferenceCornerRadius = 28.dp
-private val bottomTopCornerRadius = 4.dp
-
-val LocalPreferencePosition = compositionLocalOf { PreferencePosition.Single }
-
-fun preferenceShape(position: PreferencePosition): Shape {
-    return when (position) {
-        PreferencePosition.Single -> RoundedCornerShape(preferenceCornerRadius)
-        PreferencePosition.Top -> RoundedCornerShape(
-            topStart = preferenceCornerRadius,
-            topEnd = preferenceCornerRadius,
-            bottomStart = bottomTopCornerRadius,
-            bottomEnd = bottomTopCornerRadius
-        )
-        PreferencePosition.Middle -> RoundedCornerShape(4.dp)
-        PreferencePosition.Bottom -> RoundedCornerShape(
-            topStart = bottomTopCornerRadius,
-            topEnd = bottomTopCornerRadius,
-            bottomStart = preferenceCornerRadius,
-            bottomEnd = preferenceCornerRadius
-        )
-    }
-}
+import androidx.compose.ui.semantics.Role
 
 @Composable
 fun SwitchPreference(
@@ -76,6 +40,7 @@ fun SwitchPreference(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     customIcon: @Composable (() -> Unit)? = null,
+    iconDrawable: Drawable? = null,
     enabled: Boolean = true,
     iconTint: Color? = null,
     iconBackgroundColor: Color? = null,
@@ -88,17 +53,20 @@ fun SwitchPreference(
         summary = summary,
         icon = icon,
         customIcon = customIcon,
+        iconDrawable = iconDrawable,
         enabled = enabled,
         iconTint = iconTint,
         iconBackgroundColor = iconBackgroundColor,
         position = position,
-        modifier = modifier.clickable(
+        modifier = modifier.toggleable(
+            value = checked,
             interactionSource = interactionSource,
             indication = ripple(),
             enabled = enabled,
-        ) { onCheckedChange(!checked) },
+            role = Role.Switch,
+            onValueChange = onCheckedChange,
+        ),
         widget = {
-            Spacer(modifier = Modifier.width(16.dp))
             ExpressiveSwitch(
                 checked = checked,
                 onCheckedChange = null,
@@ -119,6 +87,7 @@ fun SettingSwitch(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     customIcon: @Composable (() -> Unit)? = null,
+    iconDrawable: Drawable? = null,
     enabled: Boolean = true,
     iconTint: Color? = null,
     iconBackgroundColor: Color? = null,
@@ -135,6 +104,7 @@ fun SettingSwitch(
         modifier = modifier,
         icon = icon,
         customIcon = customIcon,
+        iconDrawable = iconDrawable,
         enabled = enabled,
         iconTint = iconTint,
         iconBackgroundColor = iconBackgroundColor,
@@ -151,13 +121,14 @@ fun SecureSettingSwitch(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     customIcon: @Composable (() -> Unit)? = null,
+    iconDrawable: Drawable? = null,
     enabled: Boolean = true,
     iconTint: Color? = null,
     iconBackgroundColor: Color? = null,
     position: PreferencePosition = LocalPreferencePosition.current,
 ) {
     SettingSwitch(settingKey, title, SettingsType.SECURE, summary, defaultValue,
-        modifier, icon, customIcon, enabled, iconTint, iconBackgroundColor, position)
+        modifier, icon, customIcon, iconDrawable, enabled, iconTint, iconBackgroundColor, position)
 }
 
 @Composable
@@ -169,11 +140,12 @@ fun SystemSettingSwitch(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     customIcon: @Composable (() -> Unit)? = null,
+    iconDrawable: Drawable? = null,
     enabled: Boolean = true,
     iconTint: Color? = null,
     iconBackgroundColor: Color? = null,
     position: PreferencePosition = LocalPreferencePosition.current,
 ) {
     SettingSwitch(settingKey, title, SettingsType.SYSTEM, summary, defaultValue,
-        modifier, icon, customIcon, enabled, iconTint, iconBackgroundColor, position)
+        modifier, icon, customIcon, iconDrawable, enabled, iconTint, iconBackgroundColor, position)
 }
