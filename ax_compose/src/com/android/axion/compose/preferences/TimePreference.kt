@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 
@@ -60,7 +61,7 @@ fun SecureTimePreference(
     } else {
         true
     }
-    
+
     var showDialog by remember { mutableStateOf(false) }
     val formattedTime = formatTimeString(value)
 
@@ -79,7 +80,7 @@ fun SecureTimePreference(
             )
         },
     )
-    
+
     if (showDialog && enabled) {
         TimePickerDialog(
             title = title,
@@ -102,7 +103,7 @@ private fun TimePickerDialog(
 ) {
     val initialHour = initialTime.take(2).toIntOrNull() ?: 0
     val initialMinute = initialTime.takeLast(2).toIntOrNull() ?: 0
-    
+
     val timePickerState = rememberTimePickerState(
         initialHour = initialHour,
         initialMinute = initialMinute,
@@ -134,12 +135,12 @@ private fun TimePickerDialog(
                     onTimeSelected("$hour$minute")
                 }
             ) {
-                Text("OK")
+                Text(stringResource(android.R.string.ok))
             }
         },
         dismissButton = {
             OutlinedButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(android.R.string.cancel))
             }
         },
         properties = DialogProperties(usePlatformDefaultWidth = false)
